@@ -2,7 +2,7 @@ library(data.table)
 library(tidyverse)
 
 LEN_CUTOFF <- 180 # suggested cutoff: minimum length of beta barrel
-FILE <- '~/Desktop/blue_MEF.tsv'
+FILE <- ''
 
 mydata <- fread(FILE) %>%  
   mutate(length = nchar(protein)) %>% 
