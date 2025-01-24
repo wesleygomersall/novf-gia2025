@@ -102,15 +102,15 @@ blue_len_hist <- bluemefdata %>%
   geom_histogram(color = 'black', fill = 'skyblue') + 
   ylim(range(0,5000)) + 
   # scale_y_continuous(name = "Count", breaks = c(0, 4, 32, 256, 2048), labels = c("0", "4", "32", "256", "2048"), trans = 'log2') + 
-  xlab("Amino Acid Length") + 
-  ylab("Count") + 
+  xlab("Protein Length") + 
+  ylab("Count (log)") + 
   theme_bw()
 red_len_hist <- redmefdata %>%
   ggplot(aes(x=length)) + 
   geom_histogram(color = 'black', fill = 'red') + 
   ylim(range(0,5000)) + 
   # scale_y_continuous(name = "Count", breaks = c(0, 4, 32, 256, 2048), labels = c("0", "4", "32", "256", "2048"), trans = 'log2') + 
-  xlab("Amino Acid Length") + 
+  xlab("Protein Length") + 
   ylab("") + 
   theme_bw()
 
@@ -119,10 +119,10 @@ bluebrightnesses <- bluemefdata %>%
   ggplot(aes(x=MEFnorm)) + 
   geom_histogram(color = 'black', fill = 'skyblue') + 
   ylim(range(0,2050)) + 
-  scale_y_continuous(name = "Count", breaks = c(0, 4, 32, 256, 2048), labels = c("0", "4", "32", "256", "2048"), trans = 'log2') + 
+  scale_y_continuous(name = "Count (log)", breaks = c(0, 4, 32, 256, 2048), labels = c("0", "4", "32", "256", "2048"), trans = 'log2') + 
   # ggtitle("Blue brightnesses") + 
   xlab("Normalized Blue Intensity") + 
-  ylab("Count") + 
+  ylab("Count (log)") + 
   theme_bw() + 
   theme(plot.title = element_text(hjust = 0.5))  
 redbrightnesses <- redmefdata %>% 
@@ -182,9 +182,10 @@ mefplotnorm <- allmefs %>%
 blue_found <- all_found_prots %>% 
   mutate(blue = ifelse(is.na(normMEF.blue), "No", ifelse(normMEF.blue < 0.25, "No", "Yes"))) %>% 
   arrange(blue) %>% 
-  ggplot(aes(x = states.0.ex_max, y = states.0.em_max, colour = blue)) + 
+  ggplot(aes(x = states.0.ex_max, y = states.0.em_max, colour = blue, alpha = blue)) + 
   scale_color_manual(values=c("black", "blue")) +
-  geom_point(size = 1, alpha = 0.5) +
+  scale_alpha_discrete(range = c(0.3, 1)) +
+  geom_point(size = 1) +
   theme_bw() + 
   ylab("Emission wavelength (nm)") +
   xlab("Excitation wavelength (nm)") + 
@@ -193,9 +194,10 @@ blue_found <- all_found_prots %>%
 red_found <- all_found_prots %>% 
   mutate(red = ifelse(is.na(normMEF.red), "No", ifelse(normMEF.red < 0.25, "No", "Yes"))) %>% 
   arrange(red) %>% 
-  ggplot(aes(x = states.0.ex_max, y = states.0.em_max, colour = red)) + 
+  ggplot(aes(x = states.0.ex_max, y = states.0.em_max, colour = red, alpha = red)) + 
   scale_color_manual(values=c("black", "red")) +
-  geom_point(size = 1, alpha = 0.5) +
+  scale_alpha_discrete(range = c(0.3, 1)) +
+  geom_point(size = 1) +
   theme_bw() + 
   # ylab("Emission wavelength (nm)") +
   ylab("") + 
@@ -205,8 +207,8 @@ red_found <- all_found_prots %>%
 # bluebrightnesses + redbrightnesses - ggMarginal(mefplotnorm, type = "density", size = 5) + plot_layout(ncol = 1) + plot_annotation(tag_levels = "A")
 
 # Generate Plots
-blue_len_hist + red_len_hist 
-bluebrightnesses + redbrightnesses 
+blue_len_hist + red_len_hist + plot_annotation(tag_levels = "A")
+bluebrightnesses + redbrightnesses + plot_annotation(tag_levels = "A")
 # mefplotnorm
 ggMarginal(mefplotnorm, type = "density", size = 5) # plot mefplot with density
-blue_found + red_found
+blue_found + red_found + plot_annotation(tag_levels = "A")
