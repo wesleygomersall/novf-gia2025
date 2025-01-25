@@ -99,11 +99,11 @@ all_found_prots <- all_found_prots %>%
 
 blue_len_hist <- bluemefdata %>%
   ggplot(aes(x=length)) + 
-  geom_histogram(color = 'black', fill = 'skyblue') + 
+  geom_histogram(color = 'black', fill = 'blue') + 
   ylim(range(0,5000)) + 
   # scale_y_continuous(name = "Count", breaks = c(0, 4, 32, 256, 2048), labels = c("0", "4", "32", "256", "2048"), trans = 'log2') + 
   xlab("Protein Length") + 
-  ylab("Count (log)") + 
+  ylab("Count") + 
   theme_bw()
 red_len_hist <- redmefdata %>%
   ggplot(aes(x=length)) + 
@@ -117,7 +117,7 @@ red_len_hist <- redmefdata %>%
 bluebrightnesses <- bluemefdata %>% 
   mutate(MEFnorm = normalize(MEF)) %>% 
   ggplot(aes(x=MEFnorm)) + 
-  geom_histogram(color = 'black', fill = 'skyblue') + 
+  geom_histogram(color = 'black', fill = 'blue') + 
   ylim(range(0,2050)) + 
   scale_y_continuous(name = "Count (log)", breaks = c(0, 4, 32, 256, 2048), labels = c("0", "4", "32", "256", "2048"), trans = 'log2') + 
   # ggtitle("Blue brightnesses") + 
@@ -207,8 +207,19 @@ red_found <- all_found_prots %>%
 # bluebrightnesses + redbrightnesses - ggMarginal(mefplotnorm, type = "density", size = 5) + plot_layout(ncol = 1) + plot_annotation(tag_levels = "A")
 
 # Generate Plots
+pdf(file = "length_hist.pdf", width = 8, height = 4) # width and height in inches
 blue_len_hist + red_len_hist + plot_annotation(tag_levels = "A")
+dev.off()
+
+pdf(file = "brightness_hist.pdf", width = 8, height = 4) # width and height in inches
 bluebrightnesses + redbrightnesses + plot_annotation(tag_levels = "A")
+dev.off()
+
+pdf(file = "red_vs_blue.pdf", width = 8, height = 8) # width and height in inches
 # mefplotnorm
 ggMarginal(mefplotnorm, type = "density", size = 5) # plot mefplot with density
+dev.off()
+
+pdf(file = "FPbase_proteins.pdf", width = 8, height = 4) # width and height in inches
 blue_found + red_found + plot_annotation(tag_levels = "A")
+dev.off()
