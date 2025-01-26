@@ -207,11 +207,11 @@ red_found <- all_found_prots %>%
 # bluebrightnesses + redbrightnesses - ggMarginal(mefplotnorm, type = "density", size = 5) + plot_layout(ncol = 1) + plot_annotation(tag_levels = "A")
 
 # Generate Plots
-pdf(file = "length_hist.pdf", width = 8, height = 4) # width and height in inches
+pdf(file = "length_hist.pdf", width = 13, height = 7.5) # width and height in inches
 blue_len_hist + red_len_hist + plot_annotation(tag_levels = "A")
 dev.off()
 
-pdf(file = "brightness_hist.pdf", width = 8, height = 4) # width and height in inches
+pdf(file = "brightness_hist.pdf", width = 13, height = 7.5) 
 bluebrightnesses + redbrightnesses + plot_annotation(tag_levels = "A")
 dev.off()
 
@@ -220,6 +220,6 @@ pdf(file = "red_vs_blue.pdf", width = 8, height = 8) # width and height in inche
 ggMarginal(mefplotnorm, type = "density", size = 5) # plot mefplot with density
 dev.off()
 
-pdf(file = "FPbase_proteins.pdf", width = 8, height = 4) # width and height in inches
+pdf(file = "FPbase_proteins.pdf", width =13, height = 7.5) 
 blue_found + red_found + plot_annotation(tag_levels = "A")
 dev.off()
