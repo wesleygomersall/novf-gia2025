@@ -15,7 +15,9 @@ normalize <-function(m){
 
 LEN_CUTOFF <- 0 # suggested cutoff: originally 180 minimum length of beta barrel
 BLUE_MEF_FILE <- 'blue/blue_MEF_FINAL.csv'
+BLUE_COUNTS <- 'blue/blue_protcountsraw.tsv'
 RED_MEF_FILE <- 'red/red_MEF_FINAL.csv'
+RED_COUNTS <- 'red/red_protcountsraw.tsv'
 FPBASE_DATA <- 'all_proteins.csv'
 
 # create a list of the protein sequences from FPbase
@@ -94,6 +96,71 @@ all_found_prots <- all_found_prots %>%
                                   ifelse(is.na(normMEF.red), "Blue", 
                                          ifelse(normMEF.blue > normMEF.red, "Blue", 
                                                 ifelse(normMEF.red > normMEF.blue, "Red", "Inconclusive")))))
+
+bluecounts <- fread(BLUE_COUNTS)
+redcounts <- fread(RED_COUNTS)
+totalnum_blues <- sum(bluecounts$totalreads)
+totalnum_reds <- sum(redcounts$totalreads)
+sum(bluecounts$totalfrac)
+sum(redcounts$totalfrac)
+
+# bluecounts <- bluecounts %>% 
+  # mutate(bin1raw = bin1 * totalnum_blues)
+
+redvsblue <- allmefs %>% 
+  select(protein, MEF.x, MEF.y) %>% 
+  rename(RED_MEFL = MEF.y) %>% 
+  rename(BLUE_MEFL = MEF.x)
+
+redvsblue <- left_join(redvsblue, bluecounts, by= "protein", relationship = "many-to-many") %>% 
+  rename(blue_bin1 = bin1) %>% 
+  rename(blue_bin2 = bin2) %>% 
+  rename(blue_bin3 = bin3) %>% 
+  rename(blue_bin4 = bin4) %>% 
+  rename(blue_bin5 = bin5) %>% 
+  rename(blue_bin6 = bin6) %>% 
+  rename(blue_bin7 = bin7) %>% 
+  rename(blue_bin8 = bin8) %>% 
+  rename(blue_bin9 = bin9) %>% 
+  rename(blue_tot = totalreads)
+
+redvsblue <- left_join(redvsblue, redcounts, by= "protein", relationship = "many-to-many") %>% 
+  rename(red_bin1 = bin1) %>% 
+  rename(red_bin2 = bin2) %>% 
+  rename(red_bin3 = bin3) %>% 
+  rename(red_bin4 = bin4) %>% 
+  rename(red_bin5 = bin5) %>% 
+  rename(red_bin6 = bin6) %>% 
+  rename(red_bin7 = bin7) %>% 
+  rename(red_bin8 = bin8) %>% 
+  rename(red_bin9 = bin9) %>% 
+  rename(red_tot = totalreads)
+
+redvsblue <- redvsblue %>% group_by(protein) %>%
+  summarise(blue_bin1 = sum(blue_bin1, na.rm = T),
+            blue_bin2 = sum(blue_bin2, na.rm = T), 
+            blue_bin3 = sum(blue_bin3, na.rm = T), 
+            blue_bin4 = sum(blue_bin4, na.rm = T), 
+            blue_bin5 = sum(blue_bin5, na.rm = T), 
+            blue_bin6 = sum(blue_bin6, na.rm = T), 
+            blue_bin7 = sum(blue_bin7, na.rm = T), 
+            blue_bin8 = sum(blue_bin8, na.rm = T), 
+            blue_bin9 = sum(blue_bin9, na.rm = T),
+            blue_tot = sum(blue_tot, na.rm = T), 
+            blue_MEFL = mean(BLUE_MEFL, na.rm = T),
+            red_bin1 = sum(red_bin1, na.rm = T),
+            red_bin2 = sum(red_bin2, na.rm = T), 
+            red_bin3 = sum(red_bin3, na.rm = T), 
+            red_bin4 = sum(red_bin4, na.rm = T), 
+            red_bin5 = sum(red_bin5, na.rm = T), 
+            red_bin6 = sum(red_bin6, na.rm = T), 
+            red_bin7 = sum(red_bin7, na.rm = T), 
+            red_bin8 = sum(red_bin8, na.rm = T), 
+            red_bin9 = sum(red_bin9, na.rm = T),
+            red_tot = sum(red_tot, na.rm = T), 
+            red_MEFL = mean(RED_MEFL, na.rm = T))
+
+write.csv(redvsblue,"redvsblue.csv", row.names = FALSE)
 
 # PLOTS ########################################################
 
